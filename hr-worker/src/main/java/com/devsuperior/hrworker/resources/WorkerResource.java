@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +22,21 @@ import com.devsuperior.hrworker.repositories.WorkerRepository;
 public class WorkerResource {
 	
 	private static Logger logger = LoggerFactory.getLogger(WorkerResource.class);
+	
+	@Value("${test.config}")
+	private String testConfig;
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
 	private WorkerRepository repository;
+	
+	@GetMapping(value = "/configs")
+	public ResponseEntity<Void> getConfigs() {
+		logger.info("CONFIG = " + testConfig);
+		return ResponseEntity.noContent().build();
+	}
 	
 	@GetMapping
 	/**	ResponseEntity é responsável por encapsular uma resposta HTTP **/
@@ -35,7 +45,7 @@ public class WorkerResource {
 		return ResponseEntity.ok(list);
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<Worker> findById(@PathVariable Long id) {
 		
 		
@@ -45,6 +55,7 @@ public class WorkerResource {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		
 		logger.info("PORT = " + env.getProperty("local.server.port"));
 		
